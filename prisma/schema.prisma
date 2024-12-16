@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Aqui estamos referenciando a variável de ambiente
+}
+
+model Bairro {
+  id           Int    @id @default(autoincrement())
+  nome         String @unique
+  taxasOrigem  Taxa[] @relation("BairroOrigem")
+  taxasDestino Taxa[] @relation("BairroDestino")
+}
+
+model Taxa {
+  id              Int   @id @default(autoincrement())
+  bairroOrigemId  Int
+  bairroDestinoId Int
+  valor           Float
+
+  bairroOrigem  Bairro @relation("BairroOrigem", fields: [bairroOrigemId], references: [id])
+  bairroDestino Bairro @relation("BairroDestino", fields: [bairroDestinoId], references: [id])
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
